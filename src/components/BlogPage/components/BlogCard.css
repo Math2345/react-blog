@@ -1,0 +1,14 @@
+.posts {
+    width: 600px;
+    margin: 0 auto;
+}
+
+.post {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.post .deleteBtn {
+    font-size: 40px;
+}
