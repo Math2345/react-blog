@@ -1,5 +1,7 @@
 import { Component } from "react";
-import { posts } from "../../shared/projectData";
+import axios from "axios";
+
+//import { posts } from "../../shared/projectData";
 import { BlogCard } from "./components/BlogCard";
 
 import "./BlogPage.css";
@@ -8,46 +10,93 @@ import { AddPostForm } from "./components/AddPostForm";
 export class BlogPage extends Component {
   state = {
     showPostForm: false,
-    blogArr: JSON.parse(localStorage.getItem("blogPosts")) || posts,
+    blogArr: [],
   };
 
   likePost = (pos) => {
-    const temp = this.state.blogArr;
+    this.setState((state) => {
+      const temp = state.blogArr;
 
-    temp[pos].liked = !temp[pos].liked;
+      temp[pos].liked = !temp[pos].liked;
 
-    this.setState({
-      blogArr: temp,
+      localStorage.setItem("blogPosts", JSON.stringify(temp));
+
+      return {
+        blogArr: temp,
+      };
     });
-
-    localStorage.setItem("blogPosts", JSON.stringify(temp));
   };
 
   deletePost = (pos) => {
     if (window.confirm(`Удалить ${this.state.blogArr[pos].title}?`)) {
-      const temp = [...this.state.blogArr];
+      this.setState((state) => {
+        const temp = [...state.blogArr];
 
-      temp.splice(pos, 1);
+        temp.splice(pos, 1);
 
-      this.setState({
-        blogArr: temp,
+        localStorage.setItem("blogPosts", JSON.stringify(temp));
+
+        return {
+          blogArr: temp,
+        };
       });
-
-      localStorage.setItem("blogPosts", JSON.stringify(temp));
     }
   };
 
   handleShowAddForm = () => {
     this.setState({
-      showPostForm: true
-    })
-  }
+      showPostForm: true,
+    });
+  };
 
   handleHideAddForm = () => {
     this.setState({
-      showPostForm: false
-    })
+      showPostForm: false,
+    });
+  };
+
+  handleOnEscape = (e) => {
+    if (e.key === "Escape" && this.state.showPostForm) this.handleHideAddForm();
+  };
+
+  componentDidMount() {
+    axios
+      .get("https://640b474865d3a01f981659e2.mockapi.io/posts")
+      .then((response) => {
+        this.setState(() => {
+          return {
+            blogArr: response.data,
+          };
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    window.addEventListener("keyup", this.handleOnEscape);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.handleOnEscape);
+  }
+
+  addNewBlogPost = (blogPost) => {
+    const temp = [...this.state.blogArr];
+    temp.push(blogPost);
+
+    this.setState((state) => {
+      const temp = [...state.blogArr];
+      temp.push(blogPost);
+
+      localStorage.setItem("blogPosts", JSON.stringify(temp));
+
+      return {
+        blogArr: temp,
+      };
+    });
+
+    this.handleHideAddForm();
+  };
 
   render() {
     const blogPosts = this.state.blogArr.map((post, pos) => {
@@ -63,16 +112,29 @@ export class BlogPage extends Component {
       );
     });
 
+    if (this.state.blogArr.length === 0) return <h1>Загрузка...</h1>;
+
     return (
-      <>
-        {this.state.showPostForm ? <AddPostForm handleHideAddForm={this.handleHideAddForm}/> : null}
+      <div className="blogPage">
+        {this.state.showPostForm ? (
+          <AddPostForm
+            blogArr={this.state.blogArr}
+            addNewBlogPost={this.addNewBlogPost}
+            handleHideAddForm={this.handleHideAddForm}
+            showPostForm={this.state.showPostForm}
+          />
+        ) : null}
 
         <main>
-          <h1>Simple Blog</h1>
-          <button className="blackBtn" onClick={this.handleShowAddForm}>Создать новый пост</button>
+          <h1>Блог</h1>
+          <div className="addNewPost">
+            <button className="blackBtn" onClick={this.handleShowAddForm}>
+              Создать новый пост
+            </button>
+          </div>
           <div className="posts">{blogPosts}</div>
         </main>
-      </>
+      </div>
     );
   }
 }

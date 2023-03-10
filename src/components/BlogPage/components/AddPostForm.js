@@ -10,6 +10,7 @@ export class AddPostForm extends Component {
     postDescription: ''
   }
 
+
   handlePostTitleChange = e => {
     this.setState({
       postTitle: e.target.value
@@ -22,12 +23,37 @@ export class AddPostForm extends Component {
     })
   }
 
+  createPost = e => {
+    e.preventDefault();
+
+    const post = {
+      id: this.props.blogArr.length + 1,
+      title: this.state.postTitle,
+      description: this.state.postDescription,
+      liked: false
+    }
+
+    this.props.addNewBlogPost(post)
+  }
+
+  handleOnEnter = (e) => {
+    if (e.key === "Enter" && this.props.showPostForm) this.createPost(e);
+  };
+
+  componentDidMount() {
+    window.addEventListener("keyup", this.handleOnEnter);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.handleOnEnter);
+  }
+
   render() {
     const handleHideAddForm = this.props.handleHideAddForm;
 
     return (
       <>
-        <form action="#" className="addPostForm">
+        <form  className="addPostForm" onSubmit={ e => this.createPost(e)}>
           <button className="hidebtn" onClick={handleHideAddForm}>
             <CancelIcon />
           </button>
@@ -40,6 +66,7 @@ export class AddPostForm extends Component {
               placeholder="Заголовок поста"
               value={this.state.postTitle}
               onChange={this.handlePostTitleChange}
+              required
             />
           </div>
           <div>
@@ -49,12 +76,12 @@ export class AddPostForm extends Component {
               placeholder="Описание поста"
               value={this.state.postDescription}
               onChange={this.handlePostDescriptionChange}
+              required
             />
           </div>
           <div>
             <button
-              onClick={handleHideAddForm}
-              type="button"
+              type="submit"
               className="blackBtn"
             >
               Добавить пост
