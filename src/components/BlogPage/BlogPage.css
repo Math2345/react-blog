@@ -1,3 +1,14 @@
+.blogPage {
+    position: relative;
+}
+
+.blogPage .preloader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+
+
 .addNewPost {
     text-align: center;
 }
@@ -18,3 +29,5 @@
 .blackBtn:hover {
     background-color: rgba(1, 1, 1, 0.8)
 }
+
+
