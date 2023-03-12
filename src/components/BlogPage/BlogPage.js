@@ -7,12 +7,15 @@ import { BlogCard } from "./components/BlogCard";
 import "./BlogPage.css";
 import { AddPostForm } from "./components/AddPostForm";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { EditPostForm } from "./components/EditPostForm";
 
 export class BlogPage extends Component {
   state = {
     showPostForm: false,
+    showEditForm: false,
     blogArr: [],
     isPending: false,
+    selectedPost: {}
   };
 
   fetchPosts = () => {
@@ -82,17 +85,20 @@ export class BlogPage extends Component {
     });
   };
 
-  handleOnEscape = (e) => {
-    if (e.key === "Escape" && this.state.showPostForm) this.handleHideAddForm();
+  handleShowEditForm = () => {
+    this.setState({
+      showEditForm: true,
+    });
+  };
+
+  handleHideEditForm = () => {
+    this.setState({
+      showEditForm: false,
+    });
   };
 
   componentDidMount() {
     this.fetchPosts();
-    window.addEventListener("keyup", this.handleOnEscape);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("keyup", this.handleOnEscape);
   }
 
   addNewBlogPost = (blogPost) => {
@@ -113,6 +119,34 @@ export class BlogPage extends Component {
     this.handleHideAddForm();
   };
 
+  handleSelectedPost = (blogPost) => {
+
+    this.setState({
+      selectedPost: blogPost
+    })
+  }
+
+  editBlogPost = (updatedBlogPost) => {
+
+    console.log(updatedBlogPost)
+
+    this.setState({
+      isPending: true,
+    });
+
+    axios
+      .put(`https://640b474865d3a01f981659e2.mockapi.io/posts/${updatedBlogPost.id}`, updatedBlogPost)
+      .then((response) => {
+        console.log("Пост отредактирован => ", response.data);
+        this.fetchPosts();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    this.handleHideEditForm();
+  }
+
   render() {
     const blogPosts = this.state.blogArr.map((post) => {
       return (
@@ -123,24 +157,34 @@ export class BlogPage extends Component {
           liked={post.liked}
           likePost={() => this.likePost(post)}
           deletePost={() => this.deletePost(post)}
+          handleShowEditForm={this.handleShowEditForm}
+          handleSelectedPost={() => this.handleSelectedPost(post)}
         />
       );
     });
 
     if (this.state.blogArr.length === 0) return <h1>Загрузка...</h1>;
 
-    const postOpacity = this.state.isPending ? '0.5' : '1';
+    const postOpacity = this.state.isPending ? "0.5" : "1";
 
     return (
       <div className="blogPage">
-        {this.state.showPostForm ? (
+        {this.state.showPostForm && (
           <AddPostForm
             blogArr={this.state.blogArr}
             addNewBlogPost={this.addNewBlogPost}
             handleHideAddForm={this.handleHideAddForm}
             showPostForm={this.state.showPostForm}
           />
-        ) : null}
+        )}
+
+        {this.state.showEditForm && (
+          <EditPostForm   
+            handleHideEditForm={this.handleHideEditForm}
+            selectedPost={this.state.selectedPost} 
+            editBlogPost={this.editBlogPost}
+          />
+        )}
 
         <main>
           <h1>Блог</h1>

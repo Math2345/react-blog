@@ -7,3 +7,8 @@
 .post .deleteBtn {
     font-size: 40px;
 }
+
+.postControl {
+    display: flex;
+    justify-content: center;
+}
