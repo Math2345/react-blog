@@ -1,17 +1,23 @@
 import { NavLink } from "react-router-dom";
 import "./Header.css";
 
-export const Header = () => {
+export const Header = ({ isLoggedIn, setIsLoggedIn, userName }) => {
+  const handleLogOut = () => {
+    setIsLoggedIn(false);
+  };
+
   return (
     <header>
-      <nav>
-        <NavLink   to="/">
-          Home
-        </NavLink>
-        <NavLink   to="/login">
-          Логин
-        </NavLink>
-      </nav>
+      {isLoggedIn ? (
+        <nav>
+          Добро пожаловать, {userName}
+          <NavLink onClick={handleLogOut} to="/login">
+            Выход
+          </NavLink>
+        </nav>
+      ) : (
+        "Добро пожаловать!"
+      )}
     </header>
   );
 };
