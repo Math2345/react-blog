@@ -83,6 +83,7 @@ export class EditPostForm extends Component {
               placeholder="Описание поста"
               value={this.state.postDescription}
               onChange={this.handlePostDescriptionChange}
+              rows={8}
               required
             />
           </div>

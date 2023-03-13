@@ -8,6 +8,8 @@ import "./BlogPage.css";
 import { AddPostForm } from "./components/AddPostForm";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { EditPostForm } from "./components/EditPostForm";
+import { postsUrl } from "../../shared/projectData";
+
 
 export class BlogPage extends Component {
   state = {
@@ -15,12 +17,12 @@ export class BlogPage extends Component {
     showEditForm: false,
     blogArr: [],
     isPending: false,
-    selectedPost: {}
+    selectedPost: {},
   };
 
   fetchPosts = () => {
     axios
-      .get("https://640b474865d3a01f981659e2.mockapi.io/posts")
+      .get(postsUrl)
       .then((response) => {
         this.setState(() => {
           return {
@@ -40,10 +42,7 @@ export class BlogPage extends Component {
     temp.liked = !temp.liked;
 
     axios
-      .put(
-        `https://640b474865d3a01f981659e2.mockapi.io/posts/${blogPost.id}`,
-        temp
-      )
+      .put(`${postsUrl}${blogPost.id}`, temp)
       .then((response) => {
         console.log("Пост изменен => ", response.data);
         this.fetchPosts();
@@ -60,9 +59,7 @@ export class BlogPage extends Component {
       });
 
       axios
-        .delete(
-          `https://640b474865d3a01f981659e2.mockapi.io/posts/${blogPost.id}`
-        )
+        .delete(`${postsUrl}${blogPost.id}`)
         .then((response) => {
           console.log("Пост удален => ", response.data);
           this.fetchPosts();
@@ -101,13 +98,14 @@ export class BlogPage extends Component {
     this.fetchPosts();
   }
 
+
   addNewBlogPost = (blogPost) => {
     this.setState({
       isPending: true,
     });
 
     axios
-      .post("https://640b474865d3a01f981659e2.mockapi.io/posts/", blogPost)
+      .post(postsUrl, blogPost)
       .then((response) => {
         console.log("Пост cоздан => ", response.data);
         this.fetchPosts();
@@ -120,22 +118,18 @@ export class BlogPage extends Component {
   };
 
   handleSelectedPost = (blogPost) => {
-
     this.setState({
-      selectedPost: blogPost
-    })
-  }
+      selectedPost: blogPost,
+    });
+  };
 
   editBlogPost = (updatedBlogPost) => {
-
-    console.log(updatedBlogPost)
-
     this.setState({
       isPending: true,
     });
 
     axios
-      .put(`https://640b474865d3a01f981659e2.mockapi.io/posts/${updatedBlogPost.id}`, updatedBlogPost)
+      .put(`${postsUrl}${updatedBlogPost.id}`, updatedBlogPost)
       .then((response) => {
         console.log("Пост отредактирован => ", response.data);
         this.fetchPosts();
@@ -145,7 +139,7 @@ export class BlogPage extends Component {
       });
 
     this.handleHideEditForm();
-  }
+  };
 
   render() {
     const blogPosts = this.state.blogArr.map((post) => {
@@ -179,9 +173,9 @@ export class BlogPage extends Component {
         )}
 
         {this.state.showEditForm && (
-          <EditPostForm   
+          <EditPostForm
             handleHideEditForm={this.handleHideEditForm}
-            selectedPost={this.state.selectedPost} 
+            selectedPost={this.state.selectedPost}
             editBlogPost={this.editBlogPost}
           />
         )}
