@@ -1,66 +1,59 @@
 import CancelIcon from "@material-ui/icons/Cancel";
-import { Component } from "react";
+import { useEffect, useState } from "react";
 
 import "./EditPostForm.css";
 
-export class EditPostForm extends Component {
+export const EditPostForm = (props) =>  {
 
-  state = {
-    postTitle: this.props.selectedPost.title, 
-    postDescription: this.props.selectedPost.description,
+  console.log(props)
+
+  const [postTitle, setPostTitle] = useState(props.selectedPost.title);
+  const [postDescription, setPostDescription] = useState(props.selectedPost.description);
+
+
+  const handlePostTitleChange = e => {
+    setPostTitle(e.target.value)
   }
 
-
-  handlePostTitleChange = e => {
-    this.setState({
-      postTitle: e.target.value
-    })
+  const handlePostDescriptionChange = e => {
+    setPostDescription(e.target.value)
   }
 
-  handlePostDescriptionChange = e => {
-    this.setState({
-      postDescription: e.target.value
-    })
-  }
-
-  savePost = e => {
+  const savePost = e => {
     e.preventDefault();
 
     const post = {
-      id: this.props.selectedPost.id,
-      title: this.state.postTitle,
-      description: this.state.postDescription,
-      liked: this.props.selectedPost.liked
+      id: props.selectedPost.id,
+      title: postTitle,
+      description: postDescription,
+      liked: props.selectedPost.liked
     }
 
-    this.props.editBlogPost(post)
+    props.editBlogPost(post)
   }
 
-  handleOnEnter = (e) => {
+  /*const handleOnEnter = (e) => {
     if (e.key === "Enter") this.createPost(e);
-  };
+  }; */
 
-  handleOnEscape = (e) => {
-    if (e.key === "Escape") this.props.handleHideEditForm();
-  };
+ 
 
-  componentDidMount() {
-    window.addEventListener("keyup", this.handleOnEscape);
-    window.addEventListener("keyup", this.handleOnEnter);
-  }
+  useEffect(() => {
+    const handleOnEscape = (e) => {
+      if (e.key === "Escape") props.handleHideEditForm();
+    };
 
-  componentWillUnmount() {
-    window.removeEventListener("keyup", this.handleOnEscape);
-    window.removeEventListener("keyup", this.handleOnEnter);
-  }
+    window.addEventListener("keyup", handleOnEscape);
+
+    return () => window.removeEventListener("keyup", handleOnEscape)
+  }, [props])
 
 
-  render() {
-    const handleHideEditForm = this.props.handleHideEditForm;
+  const handleHideEditForm = props.handleHideEditForm;
 
     return (
       <>
-        <form  className="editPostForm" onSubmit={this.savePost}>
+        <form  className="editPostForm" onSubmit={savePost}>
           <button className="hidebtn" onClick={handleHideEditForm}>
             <CancelIcon />
           </button>
@@ -71,8 +64,8 @@ export class EditPostForm extends Component {
               type="text"
               name="postTitle"
               placeholder="Заголовок поста"
-              value={this.state.postTitle}
-              onChange={this.handlePostTitleChange}
+              value={postTitle}
+              onChange={handlePostTitleChange}
               required
             />
           </div>
@@ -81,8 +74,8 @@ export class EditPostForm extends Component {
               className="editFormInput"
               name="postDesc"
               placeholder="Описание поста"
-              value={this.state.postDescription}
-              onChange={this.handlePostDescriptionChange}
+              value={postDescription}
+              onChange={handlePostDescriptionChange}
               rows={8}
               required
             />
@@ -99,5 +92,4 @@ export class EditPostForm extends Component {
         <div onClick={handleHideEditForm} className="overlay"></div>
       </>
     );
-  }
 }
