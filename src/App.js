@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 
 import "./App.css";
 
@@ -21,16 +26,36 @@ export function App() {
           setIsLoggedIn={setIsLoggedIn}
         />
         <Routes>
-          <Route exact path="/" element={<BlogPage />} />
+          <Route
+            exact
+            path="/"
+            render={() => {
+              if (isLoggedIn) return <Navigate to="/blog" />;
+              return <Navigate to="/login" />;
+            }}
+          />
           <Route
             exact
             path="/login"
-            element={
-              <LoginPage
-                setIsLoggedIn={setIsLoggedIn}
-                setUserName={setUserName}
-              />
-            }
+            render={() => {
+              if (!isLoggedIn)
+                return (
+                  <LoginPage
+                    setIsLoggedIn={setIsLoggedIn}
+                    setUserName={setUserName}
+                  />
+                );
+              return <Navigate to="/blog" />;
+            }}
+          />
+
+          <Route
+            exact
+            path="/blog"
+            render={() => {
+              if (isLoggedIn) return <BlogPage />;
+              return <Navigate to="/login" />;
+            }}
           />
         </Routes>
         <Footer year={new Date().getFullYear()} />
