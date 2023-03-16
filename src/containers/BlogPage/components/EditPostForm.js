@@ -4,9 +4,6 @@ import { useEffect, useState } from "react";
 import "./EditPostForm.css";
 
 export const EditPostForm = (props) =>  {
-
-  console.log(props)
-
   const [postTitle, setPostTitle] = useState(props.selectedPost.title);
   const [postDescription, setPostDescription] = useState(props.selectedPost.description);
 

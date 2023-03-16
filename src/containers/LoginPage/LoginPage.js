@@ -20,9 +20,12 @@ export const LoginPage = ({ setIsLoggedIn, setUserName }) => {
   const handleLogIn = (e) => {
     e.preventDefault();
 
+    localStorage.setItem('isLoggedIn', true)
+    localStorage.setItem('userName', login)
+
     setUserName(login)
     setIsLoggedIn(true);
-    navigate("/");
+    navigate("/blog");
   };
 
   return (

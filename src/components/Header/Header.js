@@ -3,6 +3,9 @@ import "./Header.css";
 
 export const Header = ({ isLoggedIn, setIsLoggedIn, userName }) => {
   const handleLogOut = () => {
+    localStorage.removeItem('isLoggedIn')
+    localStorage.removeItem('userName')
+
     setIsLoggedIn(false);
   };
 
