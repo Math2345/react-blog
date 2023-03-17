@@ -10,7 +10,7 @@ export const NoMatch = () => {
 
   return (
     <div className="page404">
-      <button onClick={BackHome}>Назад на главную</button>
+      <button onClick={BackHome} className="blackbtn">Назад на главную</button>
       <h1>
         Запрашиваемая страница не найдена!
       </h1>

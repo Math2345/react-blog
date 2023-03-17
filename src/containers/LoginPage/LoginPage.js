@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import "./LoginPage.css";
 
-export const LoginPage = ({ setIsLoggedIn, setUserName }) => {
+export const LoginPage = ({ setIsLoggedIn, setUserName, setIsAdmin }) => {
   const navigate = useNavigate();
 
   const [login, setLogin] = useState('')
@@ -22,6 +22,11 @@ export const LoginPage = ({ setIsLoggedIn, setUserName }) => {
 
     localStorage.setItem('isLoggedIn', true)
     localStorage.setItem('userName', login)
+
+    if (login === 'admin' && password === '12345') {
+      setIsAdmin(true)
+      localStorage.setItem('isAdmin', true)
+    }
 
     setUserName(login)
     setIsLoggedIn(true);

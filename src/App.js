@@ -17,8 +17,11 @@ import { PublicRoute } from "./components/PublicRoute/PublicRoute";
 import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute";
 
 export function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
-  const [userName, setUserName] = useState(localStorage.getItem('userName'));
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("isLoggedIn") === "true"
+  );
+  const [userName, setUserName] = useState(localStorage.getItem("userName"));
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem('userName') === "admin" || false);
 
   return (
     <Router>
@@ -37,6 +40,7 @@ export function App() {
                 <LoginPage
                   setIsLoggedIn={setIsLoggedIn}
                   setUserName={setUserName}
+                  setIsAdmin={setIsAdmin}
                 />
               </PublicRoute>
             }
@@ -47,7 +51,7 @@ export function App() {
             path="/blog"
             element={
               <PrivateRoute isLoggedIn={isLoggedIn} path="/blog">
-                <BlogPage />
+                <BlogPage isAdmin={isAdmin} />
               </PrivateRoute>
             }
           />

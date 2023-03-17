@@ -11,13 +11,13 @@ export const BlogCard = ({
   likePost,
   deletePost,
   handleShowEditForm,
-  handleSelectedPost
+  handleSelectedPost,
+  isAdmin,
 }) => {
-
   const showEditForm = () => {
-    handleSelectedPost()
-    handleShowEditForm()
-  }
+    handleSelectedPost();
+    handleShowEditForm();
+  };
 
   const heartFill = liked ? "crimson" : "black";
 
@@ -32,14 +32,16 @@ export const BlogCard = ({
           </button>
         </div>
       </div>
-      <div className="postControl">
-        <button className="editBtn" onClick={showEditForm}>
-          <EditIcon />
-        </button>
-        <button>
-          <DeleteForeverIcon className="deleteBtn" onClick={deletePost} />
-        </button>
-      </div>
+      {isAdmin && (
+        <div className="postControl">
+          <button className="editBtn" onClick={showEditForm}>
+            <EditIcon />
+          </button>
+          <button>
+            <DeleteForeverIcon className="deleteBtn" onClick={deletePost} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

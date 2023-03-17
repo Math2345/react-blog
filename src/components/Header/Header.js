@@ -5,6 +5,7 @@ export const Header = ({ isLoggedIn, setIsLoggedIn, userName }) => {
   const handleLogOut = () => {
     localStorage.removeItem('isLoggedIn')
     localStorage.removeItem('userName')
+    localStorage.removeItem('isAdmin')
 
     setIsLoggedIn(false);
   };

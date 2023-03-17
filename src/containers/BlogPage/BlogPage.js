@@ -8,7 +8,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { EditPostForm } from "./components/EditPostForm";
 import { postsUrl } from "../../shared/projectData";
 
-export const BlogPage = (props) => {
+export const BlogPage = ({ isAdmin }) => {
   const [showPostForm, setShowPostForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [blogArr, setBlogArr] = useState([]);
@@ -115,6 +115,9 @@ export const BlogPage = (props) => {
     handleHideEditForm();
   };
 
+
+  console.log(isAdmin)
+
   const blogPosts = blogArr.map((post) => {
     return (
       <BlogCard
@@ -126,6 +129,7 @@ export const BlogPage = (props) => {
         deletePost={() => deletePost(post)}
         handleShowEditForm={handleShowEditForm}
         handleSelectedPost={() => handleSelectedPost(post)}
+        isAdmin={isAdmin}
       />
     );
   });
@@ -155,11 +159,13 @@ export const BlogPage = (props) => {
 
       <main>
         <h1>Блог</h1>
-        <div className="addNewPost">
-          <button className="blackBtn" onClick={handleShowAddForm}>
-            Создать новый пост
-          </button>
-        </div>
+        {isAdmin && (
+          <div className="addNewPost">
+            <button className="blackBtn" onClick={handleShowAddForm}>
+              Создать новый пост
+            </button>
+          </div>
+        )}
         <div className="posts" style={{ opacity: postOpacity }}>
           {blogPosts}
         </div>
